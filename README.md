@@ -1,4 +1,3 @@
-# cams
 %     first get the userinputs regarding the displacement time graph
 prompt = {"maximum rise", "Start of rise", "End of rise", "Start of fall","End of fall"};
 defaults = {"5","60", "120", "270","360"};
@@ -20,10 +19,32 @@ if(rise==1)
    d2=.5*dims(1,1)*(1-cos((t2-dims(1,2))*pi/(dims(1,3)-dims(1,2))));
 endif
 
+if(rise==2)
+   t2=linspace(dims(1,2),dims(1,3),(dims(1,3)-dims(1,2))/360*100);
+   if(t2<(dims(1,2)+(dims(1,3)-dims(1,2))\2))
+      d2=2*dims(1,1)*(t2\(dims(1,3)-dims(1,2)))**2;
+   elseif(t2>(dims(1,2)+(dims(1,3)-dims(1,2))\2))   
+        d2=dims(1,1)*(1-2*(t2\(dims(1,3)-dims(1,2)))**2);    
+        endif
+   
+endif
+
 if(fall==1)
    t4=linspace(dims(1,4),dims(1,5),(dims(1,5)-dims(1,4))/360*100);
    d4=.5*dims(1,1)*(1+cos((t4-dims(1,4))*pi/(dims(1,5)-dims(1,4))));
 endif
+
+if(fall==2)
+   t4=linspace(dims(1,4),dims(1,5),(dims(1,5)-dims(1,4))/360*100);
+   if(t4<(dims(1,4)+(dims(1,5)-dims(1,4))\2))
+      d4=2*dims(1,1)*(t2\(dims(1,5)-dims(1,4)))**2;
+   elseif(t4>(dims(1,4)+(dims(1,5)-dims(1,4))\2))   
+        d4=dims(1,1)*(1-2*(t4\(dims(1,5)-dims(1,4)))**2); 
+        d4=fliprt(d4);   
+        endif
+endif
+
+
 t1=d1=linspace(0,dims(1,2),(dims(1,2)/360*100));
 d1(1,:)=0;
 t3=d3=linspace(dims(1,3),dims(1,4),(dims(1,4)-dims(1,3))/360*100);
@@ -33,6 +54,14 @@ t=[t1,t2,t3,t4];
 figure
 plot(t,d)
 title('displacement diagram');
+v=(diff(d)./diff(t));
+figure
+plot(t(1:end-1),v)
+title('velocity diagram');
+figure
+ac=(diff(v)./diff(t(1:end-1)));
+plot(t(1:end-2),ac)
+title('acceleration diagram');
 
 
 
